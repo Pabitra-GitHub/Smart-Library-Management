@@ -1,0 +1,113 @@
+/* ==========================================================================
+   Design Tokens & CSS Custom Properties
+   AI Smart Library - Futuristic Glassmorphism System
+   ========================================================================== */
+
+:root {
+  /* Futuristic Obsidian Dark Palette (Default) */
+  --bg-main: #060913;
+  --bg-secondary: #0b1120;
+  --bg-card: rgba(15, 23, 42, 0.65);
+  --bg-card-hover: rgba(30, 41, 59, 0.75);
+  --bg-surface: rgba(15, 23, 42, 0.5);
+  --bg-input: rgba(15, 23, 42, 0.6);
+  --bg-modal: #0b1120;
+  --bg-pill: rgba(13, 19, 33, 0.75);
+
+  /* Glassmorphism & Cybernetic Luminous Borders */
+  --border-color: rgba(255, 255, 255, 0.09);
+  --border-card: rgba(255, 255, 255, 0.07);
+  --border-focus: #6366f1;
+  --border-glow: rgba(99, 102, 241, 0.4);
+  --glass-blur: blur(24px) saturate(180%);
+
+  /* Typography Colors */
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-inverse: #060913;
+
+  /* Brand & Futuristic Accents */
+  --primary: #6366f1;
+  --primary-hover: #4f46e5;
+  --primary-glow: rgba(99, 102, 241, 0.4);
+  --primary-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
+  --cyan-glow: rgba(6, 182, 212, 0.35);
+  
+  --secondary: #0ea5e9;
+  --secondary-hover: #0284c7;
+  
+  --accent: #06b6d4;
+  --accent-glow: rgba(6, 182, 212, 0.4);
+
+  /* Status Tokens */
+  --success: #10b981;
+  --success-bg: rgba(16, 185, 129, 0.12);
+  --success-border: rgba(16, 185, 129, 0.3);
+
+  --warning: #f59e0b;
+  --warning-bg: rgba(245, 158, 11, 0.12);
+  --warning-border: rgba(245, 158, 11, 0.3);
+
+  --danger: #ef4444;
+  --danger-bg: rgba(239, 68, 68, 0.12);
+  --danger-border: rgba(239, 68, 68, 0.3);
+
+  --info: #3b82f6;
+  --info-bg: rgba(59, 130, 246, 0.12);
+  --info-border: rgba(59, 130, 246, 0.3);
+
+  /* Layout, Shadows & Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 26px;
+  --radius-pill: 9999px;
+  --radius-full: 9999px;
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.6);
+  --shadow-glow: 0 0 30px rgba(99, 102, 241, 0.25);
+  --shadow-pill: 0 12px 35px -5px rgba(0, 0, 0, 0.5), 0 0 25px rgba(99, 102, 241, 0.15);
+
+  --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  
+  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-slow: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Futuristic Frosted White Light Theme */
+[data-theme="light"] {
+  --bg-main: #f8fafc;
+  --bg-secondary: #f1f5f9;
+  --bg-card: rgba(255, 255, 255, 0.78);
+  --bg-card-hover: rgba(255, 255, 255, 0.92);
+  --bg-surface: rgba(241, 245, 249, 0.65);
+  --bg-input: #ffffff;
+  --bg-modal: #ffffff;
+  --bg-pill: rgba(255, 255, 255, 0.82);
+
+  --border-color: rgba(148, 163, 184, 0.22);
+  --border-card: rgba(148, 163, 184, 0.18);
+  --border-focus: #4f46e5;
+  --border-glow: rgba(79, 70, 229, 0.2);
+
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --text-inverse: #f8fafc;
+
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --primary-glow: rgba(79, 70, 229, 0.25);
+  --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #06b6d4 100%);
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 12px 30px rgba(0, 0, 0, 0.08);
+  --shadow-glow: 0 0 25px rgba(79, 70, 229, 0.15);
+  --shadow-pill: 0 8px 30px rgba(0, 0, 0, 0.08), 0 0 20px rgba(79, 70, 229, 0.12);
+}

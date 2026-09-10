@@ -1,0 +1,23 @@
+{
+  "name": "ai-smart-library",
+  "version": "1.0.0",
+  "description": "AI Smart Library Management System - B.Tech CSE 7th Semester Minor Project",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": [
+    "library-management",
+    "smart-library",
+    "ai-search",
+    "college-project"
+  ],
+  "author": "B.Tech CSE Student",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  }
+}
