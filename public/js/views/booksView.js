@@ -24,29 +24,29 @@ const BooksView = {
               <span>+</span> Add New Book
             </button>
           ` : ''}
-          <button id="btn-toggle-view" class="btn btn-secondary btn-icon" title="Toggle Grid / Table View">
-            <span id="view-mode-icon">📋</span>
+          <button id="btn-toggle-view" class="btn btn-secondary btn-icon" title="${this.viewMode === 'grid' ? 'Switch to Table View' : 'Switch to Grid View'}">
+            <span id="view-mode-icon">${this.viewMode === 'grid' ? '⊞' : '≡'}</span>
           </button>
         </div>
       </div>
 
-      <!-- Search & Filters Bar -->
-      <div class="card" style="padding: 1.25rem; margin-bottom: 1.5rem;">
-        <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+      <!-- Unified Apple-Style Glass Search & Filters Toolbar -->
+      <div class="glass-toolbar">
+        <div class="glass-toolbar-row">
           <div class="search-bar-wrapper">
             <span class="search-icon">🔍</span>
-            <input type="text" id="book-search-input" class="form-control search-input" placeholder="Search by title, author, ISBN, or shelf (e.g. Python, Silberschatz, A-12)..." value="${this.searchQuery}" />
+            <input type="text" id="book-search-input" class="form-control search-input" placeholder="Search by title, author, ISBN, or shelf (e.g. Python, Silberschatz, A-12)..." value="${UI.attr(this.searchQuery)}" />
           </div>
-          <div style="display: flex; align-items: center; gap: 0.5rem;">
-            <label style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; cursor: pointer; color: var(--text-secondary);">
+          <div style="display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0;">
+            <label style="display: flex; align-items: center; gap: 0.45rem; font-size: 0.85rem; font-weight: 600; cursor: pointer; color: var(--text-secondary);">
               <input type="checkbox" id="filter-available-only" ${this.availableOnly ? 'checked' : ''} />
               Available on Shelf Only
             </label>
           </div>
         </div>
 
-        <!-- Category Chips -->
-        <div style="margin-top: 1rem;" id="book-categories-chips" class="chips-container">
+        <!-- Category Filter Chips Bar -->
+        <div id="book-categories-chips" class="chips-container" style="padding-top: 0.25rem; border-top: 1px solid var(--border-color);">
           <span class="chip ${this.currentFilterCategory === 'All' ? 'active' : ''}" data-category="All">All Categories</span>
         </div>
       </div>
@@ -80,7 +80,10 @@ const BooksView = {
 
     document.getElementById('btn-toggle-view').addEventListener('click', () => {
       this.viewMode = this.viewMode === 'grid' ? 'table' : 'grid';
-      document.getElementById('view-mode-icon').innerText = this.viewMode === 'grid' ? '📋' : '🔲';
+      const icon = document.getElementById('view-mode-icon');
+      const btn = document.getElementById('btn-toggle-view');
+      if (icon) icon.textContent = this.viewMode === 'grid' ? '⊞' : '≡';
+      if (btn) btn.title = this.viewMode === 'grid' ? 'Switch to Table View' : 'Switch to Grid View';
       this.fetchAndRenderBooks();
     });
 
@@ -99,8 +102,8 @@ const BooksView = {
 
       const categories = ['All', ...(res.categories || [])];
       container.innerHTML = categories.map(cat => `
-        <span class="chip ${this.currentFilterCategory === cat ? 'active' : ''}" data-category="${cat}">
-          ${cat}
+        <span class="chip ${this.currentFilterCategory === cat ? 'active' : ''}" data-category="${UI.attr(cat)}">
+          ${UI.escape(cat)}
         </span>
       `).join('');
 
@@ -162,6 +165,15 @@ const BooksView = {
           <div class="books-grid">
             ${books.map(b => {
               const isAvailable = b.availableCopies > 0;
+              const bookId = UI.escape(b.id);
+              const bookIdArg = UI.eventArg(b.id);
+              const bookTitle = UI.escape(b.title);
+              const bookTitleArg = UI.eventArg(b.title);
+              const category = UI.escape(b.category || 'General');
+              const author = UI.escape(b.author || 'Unknown author');
+              const description = UI.escape(b.description || 'Core technical engineering textbook.');
+              const shelfNumber = UI.escape(b.shelfNumber || '-');
+              const isbn = UI.escape(b.isbn || '-');
               const availabilityBadge = isAvailable
                 ? `<span class="badge badge-success">${b.availableCopies} of ${b.totalCopies} Available</span>`
                 : `<span class="badge badge-danger">All Copies Issued</span>`;
@@ -170,15 +182,15 @@ const BooksView = {
                 <div class="book-card">
                   <div>
                     <div class="book-header">
-                      <span class="badge badge-category">${b.category}</span>
-                      <span class="book-id-badge">${b.id}</span>
+                      <span class="badge badge-category">${category}</span>
+                      <span class="book-id-badge">${bookId}</span>
                     </div>
 
-                    <h3 class="book-title" style="margin-top: 0.6rem;">${b.title}</h3>
-                    <p class="book-author">By <strong>${b.author}</strong> (${b.publicationYear})</p>
+                    <h3 class="book-title" style="margin-top: 0.6rem;">${bookTitle}</h3>
+                    <p class="book-author">By <strong>${author}</strong> (${UI.escape(b.publicationYear || '-')})</p>
                     
                     <p class="book-description" style="margin-top: 0.6rem;">
-                      ${b.description || 'Core technical engineering textbook.'}
+                      ${description}
                     </p>
                   </div>
 
@@ -186,11 +198,11 @@ const BooksView = {
                     <div class="book-meta-grid">
                       <div class="meta-item">
                         <span class="meta-label">Shelf Location</span>
-                        <span class="meta-val">📍 ${b.shelfNumber}</span>
+                        <span class="meta-val">📍 ${shelfNumber}</span>
                       </div>
                       <div class="meta-item">
                         <span class="meta-label">ISBN</span>
-                        <span class="meta-val" style="font-size: 0.72rem; font-family: var(--font-mono);">${b.isbn}</span>
+                        <span class="meta-val" style="font-size: 0.72rem; font-family: var(--font-mono);">${isbn}</span>
                       </div>
                     </div>
 
@@ -200,18 +212,18 @@ const BooksView = {
                       <div style="display: flex; gap: 0.35rem;">
                         ${isLibrarian ? `
                           ${isAvailable ? `
-                            <button class="btn btn-primary btn-sm" onclick="IssuesView.openIssueModal('${b.id}')" title="Issue this book to a student">
+                            <button class="btn btn-primary btn-sm" onclick="IssuesView.openIssueModal('${bookIdArg}')" title="Issue this book to a student">
                               Issue
                             </button>
                           ` : ''}
-                          <button class="btn btn-secondary btn-sm" onclick="BooksView.openEditBookModal('${b.id}')" title="Edit book details">
+                          <button class="btn btn-secondary btn-sm" onclick="BooksView.openEditBookModal('${bookIdArg}')" title="Edit book details">
                             Edit
                           </button>
                           <button class="btn btn-secondary btn-sm" style="color: var(--danger);" onclick="BooksView.deleteBookPrompt('${b.id}', '${b.title.replace(/'/g, "\\'")}')" title="Delete book">
                             ✕
                           </button>
                         ` : `
-                          <button class="btn btn-secondary btn-sm" onclick="BooksView.viewBookDetail('${b.id}')">
+                          <button class="btn btn-secondary btn-sm" onclick="BooksView.viewBookDetail('${bookIdArg}')">
                             Details
                           </button>
                         `}
@@ -274,7 +286,7 @@ const BooksView = {
         `;
       }
     } catch (err) {
-      contentArea.innerHTML = `<p style="color: var(--danger); padding: 1.5rem;">Error loading books: ${err.message}</p>`;
+      contentArea.innerHTML = `<p style="color: var(--danger); padding: 1.5rem;">Error loading books: ${UI.escape(err.message)}</p>`;
     }
   },
 

@@ -12,7 +12,7 @@ const IssuesView = {
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
         <div>
           <h1 style="font-size: 1.75rem; font-weight: 800; letter-spacing: -0.02em;">Issue & Return Circulation</h1>
-          <p style="color: var(--text-secondary); font-size: 0.92rem;">Track active loans, automated 14-day due dates, and ₹5/day fine calculations</p>
+          <p style="color: var(--text-secondary); font-size: 0.92rem;">Track active borrowed books, automated 14-day due dates, and ₹5/day fine calculations</p>
         </div>
         <div>
           <button id="btn-open-issue-modal" class="btn btn-primary">
@@ -21,18 +21,18 @@ const IssuesView = {
         </div>
       </div>
 
-      <!-- Filters & Search -->
-      <div class="card" style="padding: 1.25rem; margin-bottom: 1.5rem;">
-        <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+      <!-- Unified Apple-Style Glass Search & Filters Toolbar -->
+      <div class="glass-toolbar">
+        <div class="glass-toolbar-row">
           <div class="search-bar-wrapper">
             <span class="search-icon">🔍</span>
             <input type="text" id="issue-search-input" class="form-control search-input" placeholder="Search by student name, book title, or issue ID..." value="${this.searchQuery}" />
           </div>
-          <div style="display: flex; gap: 0.5rem;" class="chips-container" id="issue-status-chips">
-            <span class="chip ${this.currentStatusFilter === 'ACTIVE' ? 'active' : ''}" data-status="ACTIVE">Active Loans</span>
-            <span class="chip ${this.currentStatusFilter === 'OVERDUE' ? 'active' : ''}" data-status="OVERDUE">Overdue Only ⏰</span>
-            <span class="chip ${this.currentStatusFilter === 'RETURNED' ? 'active' : ''}" data-status="RETURNED">Returned History</span>
-            <span class="chip ${this.currentStatusFilter === 'All' ? 'active' : ''}" data-status="All">All Transactions</span>
+          <div class="segmented-bar" id="issue-status-chips">
+            <button type="button" class="chip segment-item ${this.currentStatusFilter === 'ACTIVE' ? 'active' : ''}" data-status="ACTIVE">Active Borrowed</button>
+            <button type="button" class="chip segment-item ${this.currentStatusFilter === 'OVERDUE' ? 'active' : ''}" data-status="OVERDUE">Overdue Only ⏰</button>
+            <button type="button" class="chip segment-item ${this.currentStatusFilter === 'RETURNED' ? 'active' : ''}" data-status="RETURNED">Returned History</button>
+            <button type="button" class="chip segment-item ${this.currentStatusFilter === 'All' ? 'active' : ''}" data-status="All">All Transactions</button>
           </div>
         </div>
       </div>
@@ -87,7 +87,7 @@ const IssuesView = {
         container.innerHTML = `
           <div class="card" style="text-align: center; padding: 3.5rem 1.5rem;">
             <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">🔄</div>
-            <h3 style="font-size: 1.25rem; font-weight: 700;">${isSearch ? 'No circulation records match filters' : 'No Active Book Loans'}</h3>
+            <h3 style="font-size: 1.25rem; font-weight: 700;">${isSearch ? 'No circulation records match filters' : 'No Active Borrowed Books'}</h3>
             <p style="color: var(--text-muted); margin-top: 0.4rem; max-width: 440px; margin-left: auto; margin-right: auto;">
               ${isSearch
                 ? 'Try adjusting status filters or clearing the search query.'
@@ -213,7 +213,7 @@ const IssuesView = {
             <select id="issue-student-select" class="form-control" required>
               <option value="">-- Choose registered student --</option>
               ${students.map(s => `
-                <option value="${s.id}">${s.name} (${s.id} • ${s.department} • Active: ${s.activeLoansCount}/4)</option>
+                <option value="${s.id}">${s.name} (${s.id} • ${s.department} • Borrowed: ${s.activeLoansCount}/4)</option>
               `).join('')}
             </select>
           </div>

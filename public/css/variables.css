@@ -1,25 +1,50 @@
 /* ==========================================================================
    Design Tokens & CSS Custom Properties
-   AI Smart Library - Futuristic Glassmorphism System
+   AI Smart Library - Apple-Grade Glassmorphism & Bar Structure System
+   Inspired by macOS Sonoma, iOS 18, and visionOS Design Systems
    ========================================================================== */
 
 :root {
-  /* Futuristic Obsidian Dark Palette (Default) */
+  /* Apple-Grade Obsidian Dark Palette (Default) */
   --bg-main: #060913;
   --bg-secondary: #0b1120;
-  --bg-card: rgba(15, 23, 42, 0.65);
-  --bg-card-hover: rgba(30, 41, 59, 0.75);
-  --bg-surface: rgba(15, 23, 42, 0.5);
-  --bg-input: rgba(15, 23, 42, 0.6);
-  --bg-modal: #0b1120;
-  --bg-pill: rgba(13, 19, 33, 0.75);
+  --bg-card: rgba(15, 23, 42, 0.62);
+  --bg-card-hover: rgba(24, 34, 58, 0.76);
+  --bg-surface: rgba(15, 23, 42, 0.52);
+  --bg-input: rgba(10, 16, 30, 0.65);
+  --bg-modal: rgba(13, 19, 35, 0.88);
+  --bg-pill: rgba(11, 17, 32, 0.78);
+  --bg-dock: rgba(10, 16, 31, 0.82);
 
-  /* Glassmorphism & Cybernetic Luminous Borders */
-  --border-color: rgba(255, 255, 255, 0.09);
-  --border-card: rgba(255, 255, 255, 0.07);
+  /* Bar-Style Structure Tokens */
+  --bar-bg: rgba(14, 21, 37, 0.72);
+  --bar-bg-hover: rgba(22, 31, 54, 0.82);
+  --bar-border: rgba(255, 255, 255, 0.12);
+  --bar-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+  --bar-radius: 16px;
+  --bar-pill-radius: 9999px;
+
+  /* Segmented Control Bar Tokens */
+  --segmented-bg: rgba(0, 0, 0, 0.32);
+  --segmented-border: rgba(255, 255, 255, 0.07);
+  --segmented-indicator: rgba(255, 255, 255, 0.12);
+  --segmented-indicator-active: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
+
+  /* Apple Glass Refraction, Diffusion & Specular Highlights */
+  --glass-blur: blur(28px) saturate(190%) contrast(105%);
+  --glass-blur-sm: blur(16px) saturate(180%);
+  --glass-blur-heavy: blur(40px) saturate(200%);
+  
+  --border-color: rgba(255, 255, 255, 0.10);
+  --border-card: rgba(255, 255, 255, 0.09);
+  --border-highlight: rgba(255, 255, 255, 0.22);
   --border-focus: #6366f1;
-  --border-glow: rgba(99, 102, 241, 0.4);
-  --glass-blur: blur(24px) saturate(180%);
+  --border-glow: rgba(99, 102, 241, 0.45);
+
+  /* Multi-Stop Apple Specular Border Gradients */
+  --glass-specular-border: linear-gradient(135deg, rgba(255, 255, 255, 0.24) 0%, rgba(255, 255, 255, 0.06) 45%, rgba(255, 255, 255, 0.12) 100%);
+  --glass-inner-bevel: inset 0 1px 1px 0 rgba(255, 255, 255, 0.16), inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+  --glass-inner-bevel-hover: inset 0 1px 1px 0 rgba(255, 255, 255, 0.28), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
 
   /* Typography Colors */
   --text-primary: #f8fafc;
@@ -27,11 +52,12 @@
   --text-muted: #64748b;
   --text-inverse: #060913;
 
-  /* Brand & Futuristic Accents */
+  /* Apple / Futuristic Cybernetic Accents */
   --primary: #6366f1;
   --primary-hover: #4f46e5;
-  --primary-glow: rgba(99, 102, 241, 0.4);
+  --primary-glow: rgba(99, 102, 241, 0.45);
   --primary-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
+  --primary-glass-bg: rgba(99, 102, 241, 0.14);
   --cyan-glow: rgba(6, 182, 212, 0.35);
   
   --secondary: #0ea5e9;
@@ -42,72 +68,97 @@
 
   /* Status Tokens */
   --success: #10b981;
-  --success-bg: rgba(16, 185, 129, 0.12);
-  --success-border: rgba(16, 185, 129, 0.3);
+  --success-bg: rgba(16, 185, 129, 0.14);
+  --success-border: rgba(16, 185, 129, 0.35);
 
   --warning: #f59e0b;
-  --warning-bg: rgba(245, 158, 11, 0.12);
-  --warning-border: rgba(245, 158, 11, 0.3);
+  --warning-bg: rgba(245, 158, 11, 0.14);
+  --warning-border: rgba(245, 158, 11, 0.35);
 
   --danger: #ef4444;
-  --danger-bg: rgba(239, 68, 68, 0.12);
-  --danger-border: rgba(239, 68, 68, 0.3);
+  --danger-bg: rgba(239, 68, 68, 0.14);
+  --danger-border: rgba(239, 68, 68, 0.35);
 
   --info: #3b82f6;
-  --info-bg: rgba(59, 130, 246, 0.12);
-  --info-border: rgba(59, 130, 246, 0.3);
+  --info-bg: rgba(59, 130, 246, 0.14);
+  --info-border: rgba(59, 130, 246, 0.35);
 
-  /* Layout, Shadows & Radius */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 18px;
-  --radius-xl: 26px;
+  /* Apple Squircle & Pill Radii */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
   --radius-pill: 9999px;
   --radius-full: 9999px;
 
+  /* Optical Glass Shadows */
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35);
-  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.45);
-  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.6);
-  --shadow-glow: 0 0 30px rgba(99, 102, 241, 0.25);
-  --shadow-pill: 0 12px 35px -5px rgba(0, 0, 0, 0.5), 0 0 25px rgba(99, 102, 241, 0.15);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.45), var(--glass-inner-bevel);
+  --shadow-lg: 0 16px 48px -6px rgba(0, 0, 0, 0.65), var(--glass-inner-bevel);
+  --shadow-glow: 0 0 32px rgba(99, 102, 241, 0.3);
+  --shadow-pill: 0 14px 40px -4px rgba(0, 0, 0, 0.55), 0 0 28px rgba(99, 102, 241, 0.18), var(--glass-inner-bevel);
+  --shadow-modal: 0 28px 70px -10px rgba(0, 0, 0, 0.85), 0 0 45px rgba(99, 102, 241, 0.22), var(--glass-inner-bevel);
 
-  --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
   
-  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-normal: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  --transition-slow: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: 0.16s cubic-bezier(0.2, 0.8, 0.2, 1);
+  --transition-normal: 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-slow: 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Futuristic Frosted White Light Theme */
+/* ==========================================================================
+   Apple Frosted Crystal Light Theme (macOS / iOS Light Glass)
+   ========================================================================== */
 [data-theme="light"] {
-  --bg-main: #f8fafc;
-  --bg-secondary: #f1f5f9;
-  --bg-card: rgba(255, 255, 255, 0.78);
-  --bg-card-hover: rgba(255, 255, 255, 0.92);
-  --bg-surface: rgba(241, 245, 249, 0.65);
-  --bg-input: #ffffff;
-  --bg-modal: #ffffff;
-  --bg-pill: rgba(255, 255, 255, 0.82);
+  --bg-main: #f5f7fb;
+  --bg-secondary: #e9eef6;
+  --bg-card: rgba(255, 255, 255, 0.74);
+  --bg-card-hover: rgba(255, 255, 255, 0.90);
+  --bg-surface: rgba(240, 245, 252, 0.72);
+  --bg-input: rgba(255, 255, 255, 0.88);
+  --bg-modal: rgba(255, 255, 255, 0.92);
+  --bg-pill: rgba(255, 255, 255, 0.84);
+  --bg-dock: rgba(255, 255, 255, 0.86);
 
-  --border-color: rgba(148, 163, 184, 0.22);
-  --border-card: rgba(148, 163, 184, 0.18);
+  /* Bar-Style Structure Tokens */
+  --bar-bg: rgba(255, 255, 255, 0.78);
+  --bar-bg-hover: rgba(255, 255, 255, 0.94);
+  --bar-border: rgba(255, 255, 255, 0.85);
+  --bar-shadow: 0 8px 30px rgba(15, 23, 42, 0.08);
+
+  /* Segmented Control Bar Tokens */
+  --segmented-bg: rgba(0, 0, 0, 0.06);
+  --segmented-border: rgba(0, 0, 0, 0.05);
+  --segmented-indicator: rgba(255, 255, 255, 0.9);
+  --segmented-indicator-active: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #06b6d4 100%);
+
+  --border-color: rgba(148, 163, 184, 0.28);
+  --border-card: rgba(255, 255, 255, 0.65);
+  --border-highlight: rgba(255, 255, 255, 0.9);
   --border-focus: #4f46e5;
-  --border-glow: rgba(79, 70, 229, 0.2);
+  --border-glow: rgba(79, 70, 229, 0.25);
+
+  --glass-specular-border: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.4) 45%, rgba(255, 255, 255, 0.85) 100%);
+  --glass-inner-bevel: inset 0 1px 1px 0 rgba(255, 255, 255, 0.95), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+  --glass-inner-bevel-hover: inset 0 1px 1px 0 rgba(255, 255, 255, 1), inset 0 0 0 1px rgba(255, 255, 255, 0.75);
 
   --text-primary: #0f172a;
   --text-secondary: #475569;
-  --text-muted: #94a3b8;
+  --text-muted: #8492a6;
   --text-inverse: #f8fafc;
 
   --primary: #4f46e5;
   --primary-hover: #4338ca;
-  --primary-glow: rgba(79, 70, 229, 0.25);
+  --primary-glow: rgba(79, 70, 229, 0.28);
   --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #06b6d4 100%);
+  --primary-glass-bg: rgba(79, 70, 229, 0.10);
 
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 12px 30px rgba(0, 0, 0, 0.08);
-  --shadow-glow: 0 0 25px rgba(79, 70, 229, 0.15);
-  --shadow-pill: 0 8px 30px rgba(0, 0, 0, 0.08), 0 0 20px rgba(79, 70, 229, 0.12);
+  --shadow-sm: 0 1px 4px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 6px 20px rgba(15, 23, 42, 0.08), var(--glass-inner-bevel);
+  --shadow-lg: 0 14px 40px rgba(15, 23, 42, 0.10), var(--glass-inner-bevel);
+  --shadow-glow: 0 0 28px rgba(79, 70, 229, 0.18);
+  --shadow-pill: 0 10px 32px rgba(15, 23, 42, 0.08), 0 0 22px rgba(79, 70, 229, 0.12), var(--glass-inner-bevel);
+  --shadow-modal: 0 24px 60px rgba(15, 23, 42, 0.14), var(--glass-inner-bevel);
 }

@@ -71,8 +71,9 @@ class StatsController {
           totalFinesCollected,
           totalFinesPending,
           settings: {
-            loanPeriodDays: settings.loanPeriodDays || 14,
-            finePerDay: settings.finePerDay || 5,
+            loanPeriodDays: settings.loanPeriodDays ?? 14,
+            finePerDay: settings.finePerDay ?? 5,
+            maxBooksPerStudent: settings.maxBooksPerStudent ?? 4,
             currencySymbol: settings.currencySymbol || '₹'
           }
         },
@@ -95,6 +96,7 @@ class StatsController {
       }
 
       const allIssues = db.get('issues');
+      const settings = db.getSettings();
       const studentIssues = allIssues
         .filter(i => i.studentId === studentId)
         .map(i => fineService.enrichIssue(i));
@@ -124,7 +126,8 @@ class StatsController {
           overdueLoansCount: overdueLoans.length,
           dueSoonCount: dueSoonLoans.length,
           totalBorrowedAllTime: studentIssues.length,
-          totalPendingFine
+          totalPendingFine,
+          maxBooksPerStudent: settings.maxBooksPerStudent ?? 4
         },
         activeLoans,
         dueSoonLoans,

@@ -1,6 +1,7 @@
 /**
  * Authentication View Component
  * Provides Create Account (with Master Passcode protection for Librarian) and Sign In
+ * Styled with authentic Apple glassmorphic card architecture and segmented control bar
  */
 
 const AuthView = {
@@ -9,28 +10,34 @@ const AuthView = {
 
   render(container) {
     container.innerHTML = `
-      <div style="max-width: 500px; margin: 2rem auto 3rem;">
-        <div class="card" style="padding: 2.25rem; border: 1px solid var(--border-glow); box-shadow: var(--shadow-lg);">
+      <div style="max-width: 520px; margin: 2.25rem auto 3.5rem; position: relative;">
+        <!-- Specular Glass Auth Card -->
+        <div class="card" style="padding: 2.5rem; border: 1px solid var(--border-highlight); box-shadow: var(--shadow-modal);">
           
-          <!-- Brand Logo Header -->
-          <div style="text-align: center; margin-bottom: 1.75rem;">
-            <div class="brand-icon" style="margin: 0 auto 1rem; width: 54px; height: 54px; font-size: 1.65rem;">📚</div>
-            <h1 style="font-size: 1.7rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.35rem;">AI Smart Library</h1>
-            <p style="color: var(--text-secondary); font-size: 0.88rem;">B.Tech CSE 7th Semester Minor Project</p>
+          <!-- Brand Logo & Apple Style Header -->
+          <div style="text-align: center; margin-bottom: 2rem;">
+            <div class="brand-icon" style="margin: 0 auto 1.15rem; width: 58px; height: 58px; font-size: 1.75rem; border: 2px solid rgba(255,255,255,0.35);">📚</div>
+            <h1 style="font-size: 1.85rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 0.35rem;">AI Smart Library</h1>
+            <p style="color: var(--text-secondary); font-size: 0.90rem;">Intelligent Collegiate Technical Library & Circulation</p>
           </div>
 
-          <!-- Futuristic Mode Switcher: Create Account vs Sign In -->
-          <div style="display: flex; background: rgba(0, 0, 0, 0.25); padding: 0.3rem; border-radius: var(--radius-pill); border: 1px solid var(--border-color); margin-bottom: 1.75rem;">
-            <button type="button" id="tab-btn-register" class="btn btn-sm ${this.currentMode === 'register' ? 'btn-primary' : 'btn-secondary'}" style="flex: 1; border: none;">
+          <!-- Apple Segmented Control Bar: Create Account vs Sign In -->
+          <div class="segmented-bar" style="display: flex; width: 100%; margin-bottom: 2rem; padding: 0.3rem;">
+            <button type="button" id="tab-btn-register" class="segment-item ${this.currentMode === 'register' ? 'active' : ''}" style="flex: 1; justify-content: center; padding: 0.55rem;">
               ✨ Create Account
             </button>
-            <button type="button" id="tab-btn-login" class="btn btn-sm ${this.currentMode === 'login' ? 'btn-primary' : 'btn-secondary'}" style="flex: 1; border: none;">
+            <button type="button" id="tab-btn-login" class="segment-item ${this.currentMode === 'login' ? 'active' : ''}" style="flex: 1; justify-content: center; padding: 0.55rem;">
               🔑 Sign In
             </button>
           </div>
 
           <!-- Dynamic Form Area -->
           <div id="auth-form-container"></div>
+
+          <!-- Security Badge Footnote -->
+          <div style="margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; gap: 0.45rem; font-size: 0.76rem; color: var(--text-muted);">
+            <span>🔒</span> Encrypted Local Collegiate Security Gateway
+          </div>
         </div>
       </div>
     `;
@@ -56,14 +63,14 @@ const AuthView = {
     if (this.currentMode === 'register') {
       formContainer.innerHTML = `
         <form id="register-form">
-          <!-- Role Selection Pills -->
+          <!-- Role Selection Segmented Control Bar -->
           <div class="form-group">
             <label class="form-label">Select Account Role</label>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem;">
-              <button type="button" id="role-pill-librarian" class="btn btn-sm ${this.selectedRole === 'librarian' ? 'btn-primary' : 'btn-secondary'}" style="border-radius: var(--radius-md);">
+            <div class="segmented-bar" style="display: flex; width: 100%; padding: 0.25rem;">
+              <button type="button" id="role-pill-librarian" class="segment-item ${this.selectedRole === 'librarian' ? 'active' : ''}" style="flex: 1; justify-content: center; padding: 0.5rem;">
                 👔 Librarian (Admin)
               </button>
-              <button type="button" id="role-pill-student" class="btn btn-sm ${this.selectedRole === 'student' ? 'btn-primary' : 'btn-secondary'}" style="border-radius: var(--radius-md);">
+              <button type="button" id="role-pill-student" class="segment-item ${this.selectedRole === 'student' ? 'active' : ''}" style="flex: 1; justify-content: center; padding: 0.5rem;">
                 🎓 Student
               </button>
             </div>
@@ -90,7 +97,7 @@ const AuthView = {
           <!-- Role-specific dynamic fields -->
           <div id="role-specific-fields"></div>
 
-          <button type="submit" id="reg-submit-btn" class="btn btn-primary" style="width: 100%; margin-top: 1.25rem; padding: 0.8rem; font-size: 0.95rem;">
+          <button type="submit" id="reg-submit-btn" class="btn btn-primary" style="width: 100%; margin-top: 1.5rem; padding: 0.85rem; font-size: 0.96rem;">
             Create Account & Enter Library →
           </button>
         </form>
@@ -101,15 +108,15 @@ const AuthView = {
       // Role pill toggles
       document.getElementById('role-pill-librarian').addEventListener('click', () => {
         this.selectedRole = 'librarian';
-        document.getElementById('role-pill-librarian').className = 'btn btn-sm btn-primary';
-        document.getElementById('role-pill-student').className = 'btn btn-sm btn-secondary';
+        document.getElementById('role-pill-librarian').classList.add('active');
+        document.getElementById('role-pill-student').classList.remove('active');
         this.renderRoleSpecificFields();
       });
 
       document.getElementById('role-pill-student').addEventListener('click', () => {
         this.selectedRole = 'student';
-        document.getElementById('role-pill-student').className = 'btn btn-sm btn-primary';
-        document.getElementById('role-pill-librarian').className = 'btn btn-sm btn-secondary';
+        document.getElementById('role-pill-student').classList.add('active');
+        document.getElementById('role-pill-librarian').classList.remove('active');
         this.renderRoleSpecificFields();
       });
 
@@ -133,12 +140,12 @@ const AuthView = {
             <input type="password" id="login-password" class="form-control" placeholder="••••••••" required />
           </div>
 
-          <button type="submit" id="login-submit-btn" class="btn btn-primary" style="width: 100%; margin-top: 1.25rem; padding: 0.8rem; font-size: 0.95rem;">
+          <button type="submit" id="login-submit-btn" class="btn btn-primary" style="width: 100%; margin-top: 1.5rem; padding: 0.85rem; font-size: 0.96rem;">
             Sign In to System →
           </button>
         </form>
 
-        <div style="text-align: center; margin-top: 1.5rem; font-size: 0.84rem; color: var(--text-muted);">
+        <div style="text-align: center; margin-top: 1.5rem; font-size: 0.86rem; color: var(--text-muted);">
           Don't have an account yet? 
           <a href="#" id="link-switch-create" style="color: var(--primary); font-weight: 700; text-decoration: none;">Create an account</a>
         </div>
@@ -164,13 +171,13 @@ const AuthView = {
     if (this.selectedRole === 'librarian') {
       container.innerHTML = `
         <!-- Librarian Security Master Passcode -->
-        <div class="form-group" style="margin-top: 0.5rem; background: rgba(99, 102, 241, 0.08); padding: 0.9rem; border-radius: var(--radius-md); border: 1px solid var(--border-glow);">
+        <div class="form-group" style="margin-top: 0.75rem; background: rgba(99, 102, 241, 0.09); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-glow); box-shadow: var(--glass-inner-bevel);">
           <label class="form-label" style="display: flex; align-items: center; justify-content: space-between;">
             <span>🔒 Librarian Master Passcode *</span>
             <span class="badge badge-warning" style="font-size: 0.65rem;">Passcode Protected</span>
           </label>
           <input type="password" id="reg-passcode" class="form-control" placeholder="Enter master security key (Default: admin123)" required />
-          <span style="font-size: 0.74rem; color: var(--text-secondary); margin-top: 0.35rem; display: block;">
+          <span style="font-size: 0.74rem; color: var(--text-secondary); margin-top: 0.4rem; display: block;">
             Protects administrator registration. Only authorized library staff with the master key can create librarian accounts.
           </span>
         </div>

@@ -29,11 +29,22 @@ const Toast = {
       info: 'ℹ'
     };
 
-    toast.innerHTML = `
-      <span style="font-weight: 800; font-size: 1rem;">${iconMap[type] || '•'}</span>
-      <span style="flex: 1;">${message}</span>
-      <button style="background:none; border:none; color:inherit; cursor:pointer; opacity:0.6; font-size:1rem; padding:0 0.25rem;" onclick="this.parentElement.remove()">✕</button>
-    `;
+    const icon = document.createElement('span');
+    icon.style.fontWeight = '800';
+    icon.style.fontSize = '1rem';
+    icon.textContent = iconMap[type] || '•';
+
+    const text = document.createElement('span');
+    text.style.flex = '1';
+    text.textContent = message;
+
+    const closeBtn = document.createElement('button');
+    closeBtn.type = 'button';
+    closeBtn.style.cssText = 'background:none; border:none; color:inherit; cursor:pointer; opacity:0.6; font-size:1rem; padding:0 0.25rem;';
+    closeBtn.textContent = '✕';
+    closeBtn.addEventListener('click', () => toast.remove());
+
+    toast.append(icon, text, closeBtn);
 
     container.appendChild(toast);
 

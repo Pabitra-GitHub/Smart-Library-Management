@@ -30,7 +30,7 @@ const App = {
     this.renderNavbar(currentState);
 
     // Route to appropriate view
-    container.className = 'view-container';
+    container.className = 'main-content view-container';
     switch (currentState.activeTab) {
       case 'dashboard':
         if (currentState.currentUser.role === 'librarian') {
@@ -74,6 +74,10 @@ const App = {
   renderNavbar(currentState) {
     const user = currentState.currentUser;
     const isLibrarian = user && user.role === 'librarian';
+    const displayName = UI.escape(user.name || user.email || 'User');
+    const displayTitle = UI.attr(user.name || user.email || 'User');
+    const userInitial = UI.escape((user.name || user.email || 'U').charAt(0).toUpperCase());
+    const roleLabel = user.role === 'librarian' ? 'Admin' : UI.escape(user.department || 'Student');
 
     const navLinksContainer = document.getElementById('nav-links-container');
     const userProfileContainer = document.getElementById('nav-user-container');
@@ -111,7 +115,7 @@ const App = {
       navLinksContainer.innerHTML = `
         <li>
           <button class="nav-link-btn ${currentState.activeTab === 'my-portal' ? 'active' : ''}" data-tab="my-portal">
-            <span>👤</span> <span class="nav-text">My Loans</span>
+            <span>👤</span> <span class="nav-text">My Borrowed Books</span>
           </button>
         </li>
         <li>
@@ -141,10 +145,10 @@ const App = {
       </button>
 
       <div class="user-profile-badge">
-        <div class="user-avatar">${(user.name || 'U').charAt(0).toUpperCase()}</div>
+        <div class="user-avatar">${userInitial}</div>
         <div class="user-info">
-          <span class="user-name" title="${user.name || user.email}">${user.name || user.email}</span>
-          <span class="user-role-tag">${user.role === 'librarian' ? 'Admin' : `${user.department || 'Student'}`}</span>
+          <span class="user-name" title="${displayTitle}">${displayName}</span>
+          <span class="user-role-tag">${roleLabel}</span>
         </div>
         <button id="btn-logout" class="btn btn-secondary btn-sm" title="Sign out of system">
           Exit

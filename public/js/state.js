@@ -6,7 +6,15 @@ class AppState {
   constructor() {
     // Restore session if available
     const savedUser = localStorage.getItem('library_user');
-    this.currentUser = savedUser ? JSON.parse(savedUser) : null;
+    this.currentUser = null;
+    if (savedUser) {
+      try {
+        this.currentUser = JSON.parse(savedUser);
+      } catch (err) {
+        console.warn('Discarding invalid saved library session:', err);
+        localStorage.removeItem('library_user');
+      }
+    }
     this.activeTab = this.currentUser ? (this.currentUser.role === 'librarian' ? 'dashboard' : 'my-portal') : 'login';
     this.theme = localStorage.getItem('library_theme') || 'dark';
     this.listeners = [];

@@ -93,13 +93,25 @@ class BooksController {
         return res.status(400).json({ success: false, message: 'Total copies must be a positive number' });
       }
 
+      let publicationYearValue = new Date().getFullYear();
+      if (publicationYear) {
+        publicationYearValue = parseInt(publicationYear, 10);
+        if (Number.isNaN(publicationYearValue) || publicationYearValue < 1000 || publicationYearValue > 9999) {
+          return res.status(400).json({ success: false, message: 'Publication year must be a valid 4-digit year' });
+        }
+      }
+
       const existingBooks = db.get('books');
       if (isbn && existingBooks.some(b => b.isbn && b.isbn.trim() === isbn.trim())) {
         return res.status(400).json({ success: false, message: 'A book with this ISBN already exists' });
       }
 
       // Generate next sequential Book ID
-      const bookNum = existingBooks.length + 101;
+      const bookNum = existingBooks
+        .filter(b => typeof b.id === 'string' && /^BK-\d+$/.test(b.id))
+        .map(b => parseInt(b.id.replace('BK-', ''), 10))
+        .filter(Number.isFinite)
+        .reduce((max, num) => Math.max(max, num), 100) + 1;
       const newBook = {
         id: `BK-${bookNum}`,
         title: title.trim(),
@@ -107,7 +119,7 @@ class BooksController {
         isbn: isbn ? isbn.trim() : `978-${Math.floor(1000000000 + Math.random() * 9000000000)}`,
         category: category.trim(),
         publisher: publisher ? publisher.trim() : 'College Press',
-        publicationYear: publicationYear ? parseInt(publicationYear, 10) : new Date().getFullYear(),
+        publicationYear: publicationYearValue,
         totalCopies: copiesNum,
         availableCopies: copiesNum,
         shelfNumber: shelfNumber.trim(),
@@ -156,12 +168,25 @@ class BooksController {
       const updates = {};
       if (title) updates.title = title.trim();
       if (author) updates.author = author.trim();
-      if (isbn) updates.isbn = isbn.trim();
+      if (isbn) {
+        const cleanIsbn = isbn.trim();
+        const duplicateIsbn = db.get('books').some(b => b.id !== id && b.isbn && b.isbn.trim() === cleanIsbn);
+        if (duplicateIsbn) {
+          return res.status(400).json({ success: false, message: 'A different book already uses this ISBN' });
+        }
+        updates.isbn = cleanIsbn;
+      }
       if (category) updates.category = category.trim();
       if (publisher) updates.publisher = publisher.trim();
-      if (publicationYear) updates.publicationYear = parseInt(publicationYear, 10);
+      if (publicationYear) {
+        const year = parseInt(publicationYear, 10);
+        if (Number.isNaN(year) || year < 1000 || year > 9999) {
+          return res.status(400).json({ success: false, message: 'Publication year must be a valid 4-digit year' });
+        }
+        updates.publicationYear = year;
+      }
       if (shelfNumber) updates.shelfNumber = shelfNumber.trim();
-      if (description !== undefined) updates.description = description.trim();
+      if (description !== undefined) updates.description = String(description).trim();
       if (level) updates.level = level;
       if (tags) {
         updates.tags = Array.isArray(tags) ? tags : tags.split(',').map(t => t.trim().toLowerCase());

@@ -82,6 +82,14 @@ class IssuesController {
         });
       }
 
+      let loanDays = null;
+      if (customLoanDays !== undefined && customLoanDays !== null && customLoanDays !== '') {
+        loanDays = parseInt(customLoanDays, 10);
+        if (Number.isNaN(loanDays) || loanDays <= 0) {
+          return res.status(400).json({ success: false, message: 'Custom loan days must be a positive whole number' });
+        }
+      }
+
       // 1. Verify Student exists & is active
       const student = db.getById('students', studentId);
       if (!student) {
@@ -125,11 +133,17 @@ class IssuesController {
 
       // 5. Create Issue Record
       const issueDate = new Date();
-      const dueDate = fineService.calculateDueDate(issueDate, customLoanDays ? parseInt(customLoanDays, 10) : null);
+      const dueDate = fineService.calculateDueDate(issueDate, loanDays);
 
       const allIssues = db.get('issues');
       const year = issueDate.getFullYear();
-      const issueId = `ISS-${year}-${String(allIssues.length + 1).padStart(3, '0')}`;
+      const issuePrefix = `ISS-${year}-`;
+      const nextIssueNum = allIssues
+        .filter(i => typeof i.id === 'string' && i.id.startsWith(issuePrefix))
+        .map(i => parseInt(i.id.slice(issuePrefix.length), 10))
+        .filter(Number.isFinite)
+        .reduce((max, num) => Math.max(max, num), 0) + 1;
+      const issueId = `${issuePrefix}${String(nextIssueNum).padStart(3, '0')}`;
 
       const newIssue = {
         id: issueId,
@@ -147,12 +161,14 @@ class IssuesController {
         notes: notes ? notes.trim() : ''
       };
 
-      // 6. Atomically decrease book available copies
+      // 6. Insert issue record first, then decrement book copies.
+      // Order matters: if a crash occurs, a phantom issue is easier to fix
+      // than an inconsistent copy count with no matching issue record.
+      db.insert('issues', newIssue);
       db.update('books', book.id, {
         availableCopies: book.availableCopies - 1
       });
 
-      db.insert('issues', newIssue);
       db.logAudit('ISSUE_BOOK', `Issued "${book.title}" to ${student.name} (${student.id})`, performedBy || 'Librarian');
 
       return res.status(201).json({
@@ -184,6 +200,9 @@ class IssuesController {
 
       // Determine return date (allows override for demo/testing fine calculation)
       const returnDate = returnDateOverride ? new Date(returnDateOverride) : new Date();
+      if (Number.isNaN(returnDate.getTime())) {
+        return res.status(400).json({ success: false, message: 'Return date must be a valid date' });
+      }
 
       // Calculate fines according to PRD
       const fineResult = fineService.calculateFine(issue.dueDate, returnDate);
@@ -228,20 +247,25 @@ class IssuesController {
       const { id } = req.params;
       const { finePaid, performedBy } = req.body;
 
+      if (![true, false, 'true', 'false'].includes(finePaid)) {
+        return res.status(400).json({ success: false, message: 'finePaid must be true or false' });
+      }
+      const parsedFinePaid = finePaid === true || finePaid === 'true';
+
       const issue = db.getById('issues', id);
       if (!issue) {
         return res.status(404).json({ success: false, message: 'Issue record not found' });
       }
 
       const updated = db.update('issues', id, {
-        finePaid: Boolean(finePaid)
+        finePaid: parsedFinePaid
       });
 
-      db.logAudit('FINE_PAYMENT', `Fine payment status updated for transaction ${id} (Paid: ${finePaid})`, performedBy || 'Librarian');
+      db.logAudit('FINE_PAYMENT', `Fine payment status updated for transaction ${id} (Paid: ${parsedFinePaid})`, performedBy || 'Librarian');
 
       return res.json({
         success: true,
-        message: `Fine status updated to ${finePaid ? 'PAID' : 'PENDING'}`,
+        message: `Fine status updated to ${parsedFinePaid ? 'PAID' : 'PENDING'}`,
         issue: fineService.enrichIssue(updated)
       });
     } catch (err) {

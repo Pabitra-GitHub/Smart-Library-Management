@@ -12,7 +12,7 @@ const StudentsView = {
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
         <div>
           <h1 style="font-size: 1.75rem; font-weight: 800; letter-spacing: -0.02em;">Student Registry & Profiles</h1>
-          <p style="color: var(--text-secondary); font-size: 0.92rem;">Manage enrolled collegiate engineering students and track individual loan limits</p>
+          <p style="color: var(--text-secondary); font-size: 0.92rem;">Manage enrolled collegiate engineering students and track individual borrowing limits</p>
         </div>
         <div>
           <button id="btn-add-new-student" class="btn btn-primary">
@@ -21,19 +21,19 @@ const StudentsView = {
         </div>
       </div>
 
-      <!-- Filters & Search -->
-      <div class="card" style="padding: 1.25rem; margin-bottom: 1.5rem;">
-        <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+      <!-- Unified Apple-Style Glass Search & Filters Toolbar -->
+      <div class="glass-toolbar">
+        <div class="glass-toolbar-row">
           <div class="search-bar-wrapper">
             <span class="search-icon">🔍</span>
             <input type="text" id="student-search-input" class="form-control search-input" placeholder="Search by student name, ID, enrollment no, or email..." value="${this.searchQuery}" />
           </div>
-          <div style="display: flex; gap: 0.5rem;" class="chips-container" id="student-dept-chips">
-            <span class="chip ${this.departmentFilter === 'All' ? 'active' : ''}" data-dept="All">All Branches</span>
-            <span class="chip ${this.departmentFilter === 'CSE' ? 'active' : ''}" data-dept="CSE">CSE</span>
-            <span class="chip ${this.departmentFilter === 'IT' ? 'active' : ''}" data-dept="IT">IT</span>
-            <span class="chip ${this.departmentFilter === 'ECE' ? 'active' : ''}" data-dept="ECE">ECE</span>
-            <span class="chip ${this.departmentFilter === 'MECH' ? 'active' : ''}" data-dept="MECH">MECH</span>
+          <div class="segmented-bar" id="student-dept-chips">
+            <button type="button" class="chip segment-item ${this.departmentFilter === 'All' ? 'active' : ''}" data-dept="All">All Branches</button>
+            <button type="button" class="chip segment-item ${this.departmentFilter === 'CSE' ? 'active' : ''}" data-dept="CSE">CSE</button>
+            <button type="button" class="chip segment-item ${this.departmentFilter === 'IT' ? 'active' : ''}" data-dept="IT">IT</button>
+            <button type="button" class="chip segment-item ${this.departmentFilter === 'ECE' ? 'active' : ''}" data-dept="ECE">ECE</button>
+            <button type="button" class="chip segment-item ${this.departmentFilter === 'MECH' ? 'active' : ''}" data-dept="MECH">MECH</button>
           </div>
         </div>
       </div>
@@ -111,15 +111,15 @@ const StudentsView = {
                 <th>Name & Enrollment</th>
                 <th>Department & Semester</th>
                 <th>Contact</th>
-                <th>Active Loans</th>
+                <th>Active Borrowed</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               ${students.map(s => {
                 const loanBadge = s.activeLoansCount > 0
-                  ? `<span class="badge badge-warning">${s.activeLoansCount} Active Loan${s.activeLoansCount > 1 ? 's' : ''}</span>`
-                  : `<span class="badge badge-neutral">0 Active</span>`;
+                  ? `<span class="badge badge-warning">${s.activeLoansCount} Borrowed</span>`
+                  : `<span class="badge badge-neutral">0 Borrowed</span>`;
 
                 return `
                   <tr>

@@ -13,8 +13,11 @@ class FineService {
    */
   calculateDueDate(issueDate, customLoanDays = null) {
     const settings = db.getSettings();
-    const loanDays = customLoanDays || settings.loanPeriodDays || 14;
+    const loanDays = customLoanDays ?? settings.loanPeriodDays ?? 14;
     const date = new Date(issueDate);
+    if (Number.isNaN(date.getTime())) {
+      throw new Error('Invalid issue date');
+    }
     date.setDate(date.getDate() + loanDays);
     return date.toISOString();
   }
@@ -30,10 +33,14 @@ class FineService {
     const settings = db.getSettings();
     const fineRate = (customFinePerDay !== null && customFinePerDay !== undefined)
       ? customFinePerDay
-      : (settings.finePerDay || 5);
+      : (settings.finePerDay ?? 5);
 
     const due = new Date(dueDate);
     const targetDate = effectiveReturnDate ? new Date(effectiveReturnDate) : new Date();
+
+    if (Number.isNaN(due.getTime()) || Number.isNaN(targetDate.getTime())) {
+      throw new Error('Invalid due date or return date');
+    }
 
     // Reset time components for clean day-difference comparison
     const dueMidnight = new Date(due.getFullYear(), due.getMonth(), due.getDate());

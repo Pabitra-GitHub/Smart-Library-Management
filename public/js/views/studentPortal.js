@@ -1,6 +1,7 @@
 /**
  * Student Personal Portal View
  * Implements PRD Section 4.2 (Student capabilities) & 6.10 (Student Dashboard)
+ * Styled with authentic Apple-grade glassmorphic architecture and command bars
  */
 
 const StudentPortalView = {
@@ -8,7 +9,7 @@ const StudentPortalView = {
     const student = state.currentUser;
     if (!student || !student.studentId) {
       container.innerHTML = `
-        <div class="card" style="text-align: center; padding: 3rem;">
+        <div class="card" style="text-align: center; padding: 3.5rem;">
           <p style="color: var(--text-muted);">Please log in as a student to access the student portal.</p>
         </div>
       `;
@@ -16,25 +17,31 @@ const StudentPortalView = {
     }
 
     container.innerHTML = `
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.75rem; flex-wrap: wrap; gap: 1rem;">
-        <div>
-          <h1 style="font-size: 1.75rem; font-weight: 800; letter-spacing: -0.02em;">Welcome, ${student.name}</h1>
-          <p style="color: var(--text-secondary); font-size: 0.92rem;">
-            ${student.department} • ${student.semester || '7th Semester'} • ID: <strong>${student.studentId}</strong>
-          </p>
-        </div>
-        <div style="display: flex; gap: 0.75rem;">
-          <button class="btn btn-primary" onclick="state.setTab('smart-search')">
-            <span>✨</span> AI Smart Search
-          </button>
-          <button class="btn btn-secondary" onclick="state.setTab('books')">
-            Browse All Books
-          </button>
+      <!-- Apple-Style Glass Student Welcome Bar -->
+      <div class="glass-toolbar" style="margin-bottom: 2rem;">
+        <div class="glass-toolbar-row">
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.25rem;">
+              <h1 style="font-size: 1.75rem; font-weight: 800; letter-spacing: -0.025em; margin: 0;">Welcome, ${student.name}</h1>
+              <span class="badge badge-primary" style="font-size: 0.72rem; padding: 0.22rem 0.65rem;">Student Portal</span>
+            </div>
+            <p style="color: var(--text-secondary); font-size: 0.90rem; margin: 0;">
+              ${student.department} • ${student.semester || '7th Semester'} • Student ID: <strong style="color: var(--text-primary); font-family: var(--font-mono);">${student.studentId}</strong>
+            </p>
+          </div>
+          <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
+            <button class="btn btn-primary" onclick="state.setTab('smart-search')" style="padding: 0.55rem 1.15rem;">
+              <span>✨</span> AI Smart Search
+            </button>
+            <button class="btn btn-secondary" onclick="state.setTab('books')" style="padding: 0.55rem 1.15rem;">
+              Browse Books
+            </button>
+          </div>
         </div>
       </div>
 
       <!-- Student KPI Cards -->
-      <div id="student-kpis-grid" class="stats-grid">
+      <div id="student-kpis-grid" class="stats-grid stats-grid-4">
         <div class="card skeleton" style="height: 110px;"></div>
         <div class="card skeleton" style="height: 110px;"></div>
         <div class="card skeleton" style="height: 110px;"></div>
@@ -82,34 +89,37 @@ const StudentPortalView = {
     if (!grid) return;
 
     grid.innerHTML = `
-      <div class="stat-card">
+      <div class="stat-card" style="border-left: 3.5px solid var(--primary);">
         <div class="stat-icon primary">📖</div>
         <div class="stat-info">
-          <span class="stat-label">Active Loans</span>
-          <span class="stat-value">${stats.activeLoansCount} <span style="font-size: 0.9rem; color: var(--text-muted);">/ 4</span></span>
-          <span class="stat-subtext">Books in your possession</span>
+          <span class="stat-label">Active Borrowed</span>
+          <span class="stat-value">${stats.activeLoansCount} <span style="font-size: 0.95rem; color: var(--text-muted); font-weight: 600;">/ 4</span></span>
+          <span class="stat-subtext">Books currently in possession</span>
         </div>
       </div>
 
-      <div class="stat-card">
+      <div class="stat-card" style="border-left: 3.5px solid var(--warning);">
         <div class="stat-icon warning">⏳</div>
         <div class="stat-info">
           <span class="stat-label">Due Soon</span>
           <span class="stat-value">${stats.dueSoonCount}</span>
-          <span class="stat-subtext">Due within 3 days</span>
+          <span class="stat-subtext">Due within 3 calendar days</span>
         </div>
       </div>
 
-      <div class="stat-card">
-        <div class="stat-icon danger">⏰</div>
+      <div class="stat-card" style="border-left: 3.5px solid var(--danger);">
+        <div class="stat-icon danger" style="position: relative;">
+          <span>⏰</span>
+          ${stats.overdueLoansCount > 0 ? '<span class="pulse-dot" style="position: absolute; top: 6px; right: 6px;"></span>' : ''}
+        </div>
         <div class="stat-info">
           <span class="stat-label">Overdue</span>
           <span class="stat-value" style="color: var(--danger);">${stats.overdueLoansCount}</span>
-          <span class="stat-subtext">Requires immediate return</span>
+          <span class="stat-subtext">Requires return at circulation desk</span>
         </div>
       </div>
 
-      <div class="stat-card">
+      <div class="stat-card" style="border-left: 3.5px solid var(--accent);">
         <div class="stat-icon accent">₹</div>
         <div class="stat-info">
           <span class="stat-label">Outstanding Fine</span>
@@ -133,13 +143,13 @@ const StudentPortalView = {
 
     if (overdueLoans.length > 0) {
       banner.innerHTML = `
-        <div class="card" style="border-left: 4px solid var(--danger); background: rgba(239, 68, 68, 0.08); padding: 1.25rem;">
-          <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <div class="card" style="border: 1px solid var(--danger-border); border-left: 5px solid var(--danger); background: rgba(239, 68, 68, 0.08); padding: 1.35rem; box-shadow: 0 8px 30px rgba(239, 68, 68, 0.15);">
+          <div style="display: flex; align-items: center; gap: 0.85rem;">
             <span class="pulse-dot"></span>
             <div>
               <strong style="color: var(--danger); font-size: 1.05rem;">Overdue Book Alert!</strong>
-              <p style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 0.2rem;">
-                You have ${overdueLoans.length} book(s) past their due date. Late fines are accumulating at ₹5 per day. Please return them to the library desk.
+              <p style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 0.25rem;">
+                You have ${overdueLoans.length} book(s) past their 14-day borrowing duration. Automated late fines are accumulating at ₹5 per day. Please return them to the library desk.
               </p>
             </div>
           </div>
@@ -147,12 +157,12 @@ const StudentPortalView = {
       `;
     } else if (dueSoonLoans.length > 0) {
       banner.innerHTML = `
-        <div class="card" style="border-left: 4px solid var(--warning); background: rgba(245, 158, 11, 0.08); padding: 1.25rem;">
-          <div style="display: flex; align-items: center; gap: 0.75rem;">
-            <span style="font-size: 1.25rem;">⏳</span>
+        <div class="card" style="border: 1px solid var(--warning-border); border-left: 5px solid var(--warning); background: rgba(245, 158, 11, 0.08); padding: 1.35rem;">
+          <div style="display: flex; align-items: center; gap: 0.85rem;">
+            <span style="font-size: 1.35rem;">⏳</span>
             <div>
               <strong style="color: var(--warning); font-size: 1.05rem;">Upcoming Due Date Notice</strong>
-              <p style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 0.2rem;">
+              <p style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 0.25rem;">
                 You have book(s) due within the next 3 days. Return or renew them on time to avoid fines.
               </p>
             </div>
@@ -170,13 +180,13 @@ const StudentPortalView = {
 
     if (activeLoans.length === 0) {
       container.innerHTML = `
-        <div class="card" style="text-align: center; padding: 2.5rem;">
-          <div style="font-size: 2rem; margin-bottom: 0.5rem;">📚</div>
+        <div class="card" style="text-align: center; padding: 3rem 1.5rem;">
+          <div style="font-size: 2.25rem; margin-bottom: 0.6rem;">📚</div>
           <h4 style="font-size: 1.1rem; font-weight: 700;">No books currently borrowed</h4>
           <p style="color: var(--text-muted); font-size: 0.88rem; margin-top: 0.25rem;">
             You have full borrowing quota available (up to 4 books).
           </p>
-          <button class="btn btn-primary btn-sm" style="margin-top: 1rem;" onclick="state.setTab('books')">
+          <button class="btn btn-primary btn-sm" style="margin-top: 1.15rem;" onclick="state.setTab('books')">
             Explore Book Catalog
           </button>
         </div>
@@ -210,8 +220,8 @@ const StudentPortalView = {
                 ${countdownBadge}
               </div>
 
-              <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.35rem;">${i.bookTitle}</h3>
-              <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1rem;">Transaction: ${i.id}</p>
+              <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.35rem; letter-spacing: -0.01em;">${i.bookTitle}</h3>
+              <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1rem;">Transaction: <span style="font-family: var(--font-mono);">${i.id}</span></p>
 
               <div class="book-meta-grid">
                 <div class="meta-item">
@@ -227,7 +237,7 @@ const StudentPortalView = {
               </div>
 
               ${i.isOverdue ? `
-                <div style="margin-top: 1rem; padding: 0.65rem 0.85rem; background: rgba(239, 68, 68, 0.1); border-radius: var(--radius-md); font-size: 0.82rem; color: var(--danger); display: flex; justify-content: space-between; align-items: center;">
+                <div style="margin-top: 1rem; padding: 0.75rem 0.95rem; background: rgba(239, 68, 68, 0.12); border-radius: var(--radius-md); font-size: 0.84rem; color: var(--danger); display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--danger-border);">
                   <span>Accrued Fine:</span>
                   <strong>₹${i.calculatedFine}</strong>
                 </div>
@@ -244,12 +254,12 @@ const StudentPortalView = {
     if (!container) return;
 
     if (!history || history.length === 0) {
-      container.innerHTML = `<p style="padding: 1.5rem; text-align: center; color: var(--text-muted);">No past borrowing history recorded.</p>`;
+      container.innerHTML = `<p style="padding: 2.5rem 1.5rem; text-align: center; color: var(--text-muted);">No past borrowing history recorded yet.</p>`;
       return;
     }
 
     container.innerHTML = `
-      <div class="table-container" style="border: none;">
+      <div class="table-container" style="border: none; background: transparent; box-shadow: none;">
         <table class="modern-table">
           <thead>
             <tr>

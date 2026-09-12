@@ -1,6 +1,7 @@
 /**
  * AI Smart Book Search View
  * Implements PRD Section 6.9 & Section 10 (AI Feature Scope)
+ * Styled with Apple Spotlight-inspired floating glass command bar architecture
  */
 
 const SmartSearchView = {
@@ -12,23 +13,23 @@ const SmartSearchView = {
         <div class="ai-header-badge">
           <span>✨</span> Intelligent Natural Language Search
         </div>
-        <h1 style="font-size: 1.85rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.5rem;">
+        <h1 style="font-size: 1.85rem; font-weight: 800; letter-spacing: -0.025em; margin-bottom: 0.5rem;">
           Ask the AI Smart Library
         </h1>
-        <p style="color: var(--text-secondary); font-size: 0.95rem; max-width: 780px;">
+        <p style="color: var(--text-secondary); font-size: 0.95rem; max-width: 780px; line-height: 1.5;">
           Describe what you want to learn in plain English (e.g., <em>"I want a beginner book for learning Python"</em> or <em>"I need an easy book to learn Java"</em>). The AI will identify your learning level, extract key topics, and rank matching books in the library.
         </p>
 
         <div class="ai-query-box">
           <input type="text" id="ai-query-input" class="ai-input" placeholder="Type your natural language request here... (Press Enter or click Smart Search)" value="${this.currentQuery}" autofocus />
-          <button id="btn-run-ai-search" class="btn btn-primary" style="padding: 0 1.75rem; font-size: 1rem;">
+          <button id="btn-run-ai-search" class="btn btn-primary" style="padding: 0 1.85rem; font-size: 1rem; border-radius: var(--radius-pill);">
             <span>⚡</span> Smart Search
           </button>
         </div>
 
         <!-- Sample Query Chips -->
-        <div style="margin-top: 1.25rem;">
-          <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.6rem;">
+        <div style="margin-top: 1.35rem;">
+          <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; display: block; margin-bottom: 0.6rem;">
             💡 Try One of These Sample Queries:
           </span>
           <div class="chips-container" id="ai-suggestion-chips" style="margin-bottom: 0;">
@@ -46,10 +47,10 @@ const SmartSearchView = {
 
       <!-- AI Ranked Results -->
       <div id="ai-results-container">
-        <div class="card" style="text-align: center; padding: 3rem 1.5rem;">
-          <div style="font-size: 2.25rem; margin-bottom: 0.75rem;">🤖</div>
-          <h3 style="font-size: 1.15rem; font-weight: 700;">AI Engine Ready</h3>
-          <p style="color: var(--text-muted); margin-top: 0.35rem; max-width: 460px; margin-left: auto; margin-right: auto;">
+        <div class="card" style="text-align: center; padding: 3.5rem 1.5rem;">
+          <div style="font-size: 2.5rem; margin-bottom: 0.85rem;">🤖</div>
+          <h3 style="font-size: 1.2rem; font-weight: 700; letter-spacing: -0.01em;">AI Engine Ready</h3>
+          <p style="color: var(--text-muted); margin-top: 0.4rem; max-width: 460px; margin-left: auto; margin-right: auto; line-height: 1.5;">
             Enter a prompt above or click one of the sample queries to see real-time keyword extraction and intent-based matching in action.
           </p>
         </div>
@@ -100,32 +101,32 @@ const SmartSearchView = {
     try {
       const res = await API.smartSearch(query);
 
-      // 1. Render AI Pipeline Explanation Banner
+      // 1. Render AI Pipeline Visualizer Banner
       analysisBox.style.display = 'block';
       analysisBox.innerHTML = `
         <div class="ai-analysis-banner">
-          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
-            <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+            <div style="display: flex; align-items: center; gap: 0.55rem;">
               <span style="font-size: 1.25rem;">🧠</span>
-              <strong style="font-size: 0.95rem;">AI Intent & Keyword Analysis:</strong>
+              <strong style="font-size: 0.95rem; letter-spacing: -0.01em;">Natural Language Analysis Pipeline</strong>
             </div>
-            <span class="badge badge-category">${res.totalMatches} Matching Resource${res.totalMatches !== 1 ? 's' : ''} Found</span>
+            <div style="display: flex; gap: 0.45rem;">
+              <span class="badge badge-primary">Level: ${res.detectedLevel.toUpperCase()}</span>
+              <span class="badge badge-info">Intent: ${res.intent}</span>
+            </div>
           </div>
 
-          <div style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 0.25rem;">
-            <strong>Detected Goal:</strong> ${res.intentSummary}
-            ${res.detectedLevel ? ` • <strong>Target Difficulty:</strong> <span class="badge badge-info">${res.detectedLevel}</span>` : ''}
-          </div>
-
-          <div style="margin-top: 0.5rem;">
-            <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em; display: block; margin-bottom: 0.35rem;">
+          <div style="margin-top: 0.65rem;">
+            <span style="font-size: 0.76rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">
               Extracted Keywords:
             </span>
-            <div class="keyword-chips-row">
-              ${(res.extractedKeywords || []).map(k => `
-                <span class="keyword-tag">🏷️ ${k}</span>
-              `).join('')}
+            <div class="keyword-chips-row" style="margin-top: 0.35rem;">
+              ${res.extractedKeywords.map(k => `<span class="keyword-tag">#${k}</span>`).join('')}
             </div>
+          </div>
+
+          <div style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 0.45rem; padding-top: 0.55rem; border-top: 1px solid var(--border-color);">
+            Analyzed query in <strong>${res.executionTimeMs}ms</strong> • Ranked <strong>${res.results.length}</strong> matching textbook${res.results.length === 1 ? '' : 's'}.
           </div>
         </div>
       `;
@@ -155,14 +156,14 @@ const SmartSearchView = {
               <div class="card" style="border-left: 4px solid var(--primary); transition: transform 0.2s ease;">
                 <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap;">
                   <div>
-                    <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.4rem;">
+                    <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.45rem;">
                       <span class="badge badge-primary" style="background: var(--primary); color: #fff; font-size: 0.7rem;">${rankLabel}</span>
                       <span class="relevance-score-badge">⚡ ${b.matchPercentage}% Relevance</span>
                       <span class="badge badge-category">${b.category}</span>
                       <span class="book-id-badge">${b.id}</span>
                     </div>
 
-                    <h2 style="font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.25rem;">
+                    <h2 style="font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.25rem; letter-spacing: -0.015em;">
                       ${b.title}
                     </h2>
                     <p style="font-size: 0.88rem; color: var(--text-secondary);">
@@ -184,12 +185,12 @@ const SmartSearchView = {
                   ${b.description || 'Core reference textbook.'}
                 </p>
 
-                <!-- AI Match Reasons -->
-                <div style="background: var(--bg-surface); padding: 0.65rem 0.85rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+                <!-- AI Match Reasons Bar -->
+                <div style="background: var(--bg-surface); padding: 0.75rem 0.95rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
                   <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
                     <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Why it matched:</span>
                     ${(b.matchReasons || []).map(r => `
-                      <span style="font-size: 0.78rem; background: var(--bg-card); padding: 0.2rem 0.5rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); color: var(--text-primary);">
+                      <span style="font-size: 0.78rem; background: var(--bg-card); padding: 0.2rem 0.55rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); color: var(--text-primary);">
                         ✓ ${r}
                       </span>
                     `).join('')}

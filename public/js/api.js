@@ -121,6 +121,10 @@ const API = {
     return this.request(`/issues${query ? `?${query}` : ''}`);
   },
 
+  getIssueById(id) {
+    return this.request(`/issues/${encodeURIComponent(id)}`);
+  },
+
   issueBook(issueData) {
     return this.request('/issues', {
       method: 'POST',

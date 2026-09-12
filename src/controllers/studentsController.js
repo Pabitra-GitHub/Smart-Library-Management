@@ -100,21 +100,37 @@ class StudentsController {
       }
 
       const existingStudents = db.get('students');
-      if (existingStudents.some(s => s.email.toLowerCase() === email.trim().toLowerCase())) {
+      const cleanEmail = email.trim().toLowerCase();
+      if (existingStudents.some(s => s.email && s.email.toLowerCase() === cleanEmail)) {
         return res.status(400).json({
           success: false,
           message: 'A student with this email address is already registered'
         });
       }
 
+      const existingUsers = db.get('users');
+      const username = email.split('@')[0].replace(/[^a-zA-Z0-9]/g, '').toLowerCase() || `stu${Date.now()}`;
+      if (existingUsers.some(u => u.email && u.email.toLowerCase() === cleanEmail)) {
+        return res.status(400).json({ success: false, message: 'A user account with this email already exists' });
+      }
+      if (existingUsers.some(u => u.username && u.username.toLowerCase() === username)) {
+        return res.status(400).json({ success: false, message: 'A user account with this generated username already exists' });
+      }
+
       const year = new Date().getFullYear();
-      const num = String(existingStudents.length + 1).padStart(3, '0');
+      const studentPrefix = `STU-${year}-`;
+      const nextStudentNum = existingStudents
+        .filter(s => typeof s.id === 'string' && s.id.startsWith(studentPrefix))
+        .map(s => parseInt(s.id.slice(studentPrefix.length), 10))
+        .filter(Number.isFinite)
+        .reduce((max, num) => Math.max(max, num), 0) + 1;
+      const num = String(nextStudentNum).padStart(3, '0');
       const studentId = `STU-${year}-${num}`;
 
       const newStudent = {
         id: studentId,
         name: name.trim(),
-        email: email.trim(),
+        email: cleanEmail,
         phone: phone ? phone.trim() : '',
         department: department.trim(),
         semester: semester.trim(),
@@ -126,7 +142,6 @@ class StudentsController {
       db.insert('students', newStudent);
 
       // Also create login account for this student
-      const username = email.split('@')[0].replace(/[^a-zA-Z0-9]/g, '').toLowerCase() || `stu${num}`;
       const newUser = {
         id: `USR-${studentId}`,
         username,
@@ -170,7 +185,15 @@ class StudentsController {
       const updates = {};
 
       if (name) updates.name = name.trim();
-      if (email) updates.email = email.trim();
+      if (email) {
+        const cleanEmail = email.trim().toLowerCase();
+        const duplicateStudent = db.get('students').some(s => s.id !== id && s.email && s.email.toLowerCase() === cleanEmail);
+        const duplicateUser = db.get('users').some(u => u.studentId !== id && u.email && u.email.toLowerCase() === cleanEmail);
+        if (duplicateStudent || duplicateUser) {
+          return res.status(400).json({ success: false, message: 'Another student or user already uses this email address' });
+        }
+        updates.email = cleanEmail;
+      }
       if (phone !== undefined) updates.phone = phone.trim();
       if (department) updates.department = department.trim();
       if (semester) updates.semester = semester.trim();

@@ -18,6 +18,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Mount API routes
 app.use('/api', apiRoutes);
 
+app.use('/api', (req, res) => {
+  res.status(404).json({
+    success: false,
+    message: `API endpoint not found: ${req.method} ${req.originalUrl}`
+  });
+});
+
 // SPA fallback: Return index.html for any unmatched client routes
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));

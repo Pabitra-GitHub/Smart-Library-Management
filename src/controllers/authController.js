@@ -27,9 +27,27 @@ class AuthController {
         });
       }
 
+      // NOTE: Passwords are stored in plaintext for this academic demo.
+      // In a production system, use bcrypt or argon2 for hashing.
+      if (password.length < 6) {
+        return res.status(400).json({
+          success: false,
+          message: 'Password must be at least 6 characters long'
+        });
+      }
+
+      const normalizedRole = String(role).trim().toLowerCase();
+      if (!['librarian', 'student'].includes(normalizedRole)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Account role must be either librarian or student'
+        });
+      }
+
       const users = db.get('users');
       const cleanEmail = email.trim().toLowerCase();
-      const cleanUsername = (username ? username.trim().toLowerCase() : cleanEmail.split('@')[0].replace(/[^a-zA-Z0-9]/g, ''));
+      let cleanUsername = (username ? username.trim().toLowerCase() : cleanEmail.split('@')[0].replace(/[^a-zA-Z0-9]/g, ''));
+      if (!cleanUsername) cleanUsername = `${normalizedRole}${Date.now()}`;
 
       // Duplicate check
       if (users.some(u => u.email.toLowerCase() === cleanEmail)) {
@@ -47,7 +65,7 @@ class AuthController {
       }
 
       // Password protection for Librarian Account
-      if (role === 'librarian') {
+      if (normalizedRole === 'librarian') {
         const settings = db.getSettings();
         const masterKey = settings.librarianPasscode || 'admin123';
 
@@ -61,10 +79,22 @@ class AuthController {
 
       let studentId = null;
       // If registering as student, generate student registry record
-      if (role === 'student') {
+      if (normalizedRole === 'student') {
         const students = db.get('students');
+        if (students.some(s => s.email && s.email.toLowerCase() === cleanEmail)) {
+          return res.status(400).json({
+            success: false,
+            message: 'A student with this email address is already registered'
+          });
+        }
         const year = new Date().getFullYear();
-        const num = String(students.length + 1).padStart(3, '0');
+        const studentPrefix = `STU-${year}-`;
+        const nextStudentNum = students
+          .filter(s => typeof s.id === 'string' && s.id.startsWith(studentPrefix))
+          .map(s => parseInt(s.id.slice(studentPrefix.length), 10))
+          .filter(Number.isFinite)
+          .reduce((max, num) => Math.max(max, num), 0) + 1;
+        const num = String(nextStudentNum).padStart(3, '0');
         studentId = `STU-${year}-${num}`;
 
         const newStudent = {
@@ -82,23 +112,23 @@ class AuthController {
         db.insert('students', newStudent);
       }
 
-      const userId = `USR-${role.toUpperCase()}-${Date.now().toString().slice(-4)}`;
+      const userId = `USR-${normalizedRole.toUpperCase()}-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
       const newUser = {
         id: userId,
         username: cleanUsername,
         email: cleanEmail,
         password, // In a production system, hashed with bcrypt
         name: name.trim(),
-        role: role === 'librarian' ? 'librarian' : 'student',
+        role: normalizedRole,
         studentId,
-        department: department || (role === 'librarian' ? 'Library Administration' : 'CSE'),
+        department: department || (normalizedRole === 'librarian' ? 'Library Administration' : 'CSE'),
         semester: semester || null,
-        designation: designation || (role === 'librarian' ? 'Librarian' : 'Student'),
+        designation: designation || (normalizedRole === 'librarian' ? 'Librarian' : 'Student'),
         createdAt: new Date().toISOString()
       };
 
       db.insert('users', newUser);
-      db.logAudit('REGISTER', `New ${role} account created for ${name.trim()} (${newUser.id})`, name.trim());
+      db.logAudit('REGISTER', `New ${normalizedRole} account created for ${name.trim()} (${newUser.id})`, name.trim());
 
       // Return safe user profile
       const safeUser = {

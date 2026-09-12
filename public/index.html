@@ -4,8 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="AI Smart Library - Futuristic Digital Library Management System with Natural Language Smart Search" />
+  <meta name="theme-color" content="#060913" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#f8fafc" media="(prefers-color-scheme: light)" />
   <title>AI Smart Library - Futuristic Library Management</title>
-  
+
+  <!-- Font preconnect for faster loading -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
   <!-- Stylesheets -->
   <link rel="stylesheet" href="css/variables.css" />
   <link rel="stylesheet" href="css/base.css" />
@@ -41,12 +47,14 @@
       <!-- Views rendered dynamically (Auth, Librarian, Books, Students, Issues, Portal, SmartSearch) -->
     </main>
 
-    <!-- Native Accessible Dialog Modals (Modern Web Guidance Compliant) -->
-    <dialog id="book-dialog" closedby="any" aria-label="Book Management Dialog"></dialog>
-    <dialog id="student-dialog" closedby="any" aria-label="Student Profile Dialog"></dialog>
-    <dialog id="issue-dialog" closedby="any" aria-label="Issue Transaction Dialog"></dialog>
-    <dialog id="return-dialog" closedby="any" aria-label="Return Book Dialog"></dialog>
-    <dialog id="settings-dialog" closedby="any" aria-label="Library Settings Dialog"></dialog>
+    <!-- Native Accessible Dialog Modals -->
+    <dialog id="book-dialog" aria-label="Book Management Dialog"></dialog>
+    <dialog id="student-dialog" aria-label="Student Profile Dialog"></dialog>
+    <dialog id="issue-dialog" aria-label="Issue Transaction Dialog"></dialog>
+    <dialog id="return-dialog" aria-label="Return Book Dialog"></dialog>
+    <dialog id="settings-dialog" aria-label="Library Settings Dialog"></dialog>
+    <dialog id="confirm-dialog" aria-label="Action Confirmation Dialog"></dialog>
+    <dialog id="chart-details-dialog" aria-label="Interactive Chart Details Dialog"></dialog>
 
     <!-- Global Toast Notifications Container -->
     <div id="toast-container" aria-live="polite"></div>
@@ -54,6 +62,7 @@
 
   <!-- Scripts -->
   <script src="js/api.js"></script>
+  <script src="js/utils.js"></script>
   <script src="js/state.js"></script>
   <script src="js/components/toast.js"></script>
   <script src="js/components/modal.js"></script>

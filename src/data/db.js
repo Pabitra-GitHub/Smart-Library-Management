@@ -22,29 +22,36 @@ class JSONDatabase {
         const raw = fs.readFileSync(DB_FILE, 'utf8');
         JSON.parse(raw);
       } catch (err) {
-        console.warn('Database file corrupted or empty. Re-seeding data.');
+        const backupFile = `${DB_FILE}.bak.corrupt-${Date.now()}`;
+        try {
+          fs.copyFileSync(DB_FILE, backupFile);
+          console.warn(`Database corrupted. Backed up to ${backupFile} and re-seeding.`);
+        } catch (backupErr) {
+          console.warn('Database corrupted; backup also failed. Re-seeding.', backupErr);
+        }
         this._writeAll(JSON.parse(JSON.stringify(seedData)));
       }
     }
   }
 
   _readAll() {
-    try {
-      const raw = fs.readFileSync(DB_FILE, 'utf8');
-      return JSON.parse(raw);
-    } catch (err) {
-      console.error('Error reading database file:', err);
-      return JSON.parse(JSON.stringify(seedData));
-    }
+    const raw = fs.readFileSync(DB_FILE, 'utf8');
+    return JSON.parse(raw);
   }
 
   _writeAll(data) {
+    const tempFile = `${DB_FILE}.tmp.${Date.now()}`;
     try {
-      fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf8');
+      fs.writeFileSync(tempFile, JSON.stringify(data, null, 2), 'utf8');
+      fs.renameSync(tempFile, DB_FILE);
       return true;
     } catch (err) {
-      console.error('Error writing database file:', err);
-      return false;
+      try {
+        if (fs.existsSync(tempFile)) fs.unlinkSync(tempFile);
+      } catch (cleanupErr) {
+        console.error('Error cleaning up temporary database file:', cleanupErr);
+      }
+      throw new Error(`Error writing database file: ${err.message}`);
     }
   }
 
@@ -73,6 +80,9 @@ class JSONDatabase {
   insert(collectionName, item) {
     const data = this._readAll();
     if (!data[collectionName]) data[collectionName] = [];
+    if (item && item.id && data[collectionName].some(existing => existing.id === item.id)) {
+      throw new Error(`Duplicate id "${item.id}" in ${collectionName}`);
+    }
     data[collectionName].push(item);
     this._writeAll(data);
     return item;
@@ -122,7 +132,14 @@ class JSONDatabase {
       timestamp: new Date().toISOString(),
       performedBy
     };
-    this.insert('auditLogs', entry);
+    // Keep only the most recent 200 audit entries to prevent unbounded growth
+    const data = this._readAll();
+    if (!data.auditLogs) data.auditLogs = [];
+    data.auditLogs.push(entry);
+    if (data.auditLogs.length > 200) {
+      data.auditLogs = data.auditLogs.slice(-200);
+    }
+    this._writeAll(data);
     return entry;
   }
 

@@ -6,9 +6,53 @@
     "currencySymbol": "₹",
     "librarianPasscode": "admin123"
   },
-  "users": [],
+  "users": [
+    {
+      "id": "USR-LIBRARIAN-1789179728753-705",
+      "username": "admin",
+      "email": "admin@college.edu",
+      "password": "password123",
+      "name": "Admin Librarian",
+      "role": "librarian",
+      "studentId": null,
+      "department": "Library Administration",
+      "semester": null,
+      "designation": "Head Librarian",
+      "createdAt": "2026-09-12T02:22:08.755Z"
+    },
+    {
+      "id": "USR-LIBRARIAN-1789179890377-352",
+      "username": "chpabitrakunayak",
+      "email": "chpabitrakunayak@gmail.com",
+      "password": "EmC4inptbTrhHzi",
+      "name": "Ch. Pabitra Kumar Nayak",
+      "role": "librarian",
+      "studentId": null,
+      "department": "Library Administration",
+      "semester": null,
+      "designation": "Librarian",
+      "createdAt": "2026-09-12T02:24:50.377Z"
+    }
+  ],
   "students": [],
-  "books": [],
+  "books": [
+    {
+      "id": "BK-101",
+      "title": "Modern Operating Systems",
+      "author": "Andrew S. Tanenbaum",
+      "isbn": "978-0133591620",
+      "category": "Operating Systems",
+      "publisher": "Pearson",
+      "publicationYear": 2015,
+      "totalCopies": 5,
+      "availableCopies": 5,
+      "shelfNumber": "CS-B2-04",
+      "description": "Comprehensive guide to operating system design, processes, concurrency, and memory management.",
+      "tags": [],
+      "level": "Intermediate",
+      "createdAt": "2026-09-12T02:22:08.787Z"
+    }
+  ],
   "issues": [],
   "auditLogs": [
     {
@@ -17,6 +61,34 @@
       "description": "AI Smart Library initialized in clean mode.",
       "timestamp": "2026-09-10T08:18:11.703Z",
       "performedBy": "System"
+    },
+    {
+      "id": "LOG-1789179728761-390",
+      "action": "REGISTER",
+      "description": "New librarian account created for Admin Librarian (USR-LIBRARIAN-1789179728753-705)",
+      "timestamp": "2026-09-12T02:22:08.761Z",
+      "performedBy": "Admin Librarian"
+    },
+    {
+      "id": "LOG-1789179728775-235",
+      "action": "LOGIN",
+      "description": "User Admin Librarian (librarian) logged in",
+      "timestamp": "2026-09-12T02:22:08.775Z",
+      "performedBy": "Admin Librarian"
+    },
+    {
+      "id": "LOG-1789179728790-416",
+      "action": "ADD_BOOK",
+      "description": "Added new book \"Modern Operating Systems\" (ID: BK-101)",
+      "timestamp": "2026-09-12T02:22:08.790Z",
+      "performedBy": "Librarian"
+    },
+    {
+      "id": "LOG-1789179890385-715",
+      "action": "REGISTER",
+      "description": "New librarian account created for Ch. Pabitra Kumar Nayak (USR-LIBRARIAN-1789179890377-352)",
+      "timestamp": "2026-09-12T02:24:50.385Z",
+      "performedBy": "Ch. Pabitra Kumar Nayak"
     }
   ]
 }
