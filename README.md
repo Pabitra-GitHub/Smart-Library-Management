@@ -1,3 +1,4 @@
+Ch. Pabitra Kumar Nayak
 # 📚 AI Smart Library Management System
 
 > **B.Tech CSE — 7th Semester Minor Project**  
